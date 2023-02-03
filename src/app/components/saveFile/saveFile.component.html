@@ -1,0 +1,26 @@
+<ng-container *ngFor="let fileDef of _fileContent">
+  <input type="checkbox" (change)="markForSave($event, fileDef.name)" /> Save
+  {{ fileDef.name }}
+  <!-- <input
+    type="text"
+    [formControl]="searchControl"
+    placeholder="Enter a file name"
+    id="fileName"
+    #fileName
+  />.json -->
+  <br />
+  <input type="text" (input)="setFileName($event, fileDef.name)" />.json
+  <br />
+  <ng-container *ngIf="filesToSave[fileDef.name]">
+    {{ filesToSave[fileDef.name].saveName }}
+  </ng-container>
+  <br />
+  <br />
+</ng-container>
+
+<span *ngIf="error">Cannot save file without both a name and a file input</span>
+<br />
+<div class="file-container">
+  <button class="file-button" (click)="saveFiles()">Save As</button>
+  <br />
+</div>

@@ -1,0 +1,15 @@
+<button (click)="convertToAgreementSchema()">Convert agreements to new DB schema</button>
+<br/>
+<span *ngIf="partner_agreementsJSON.length > 0">
+  partner_agreementsJSON created - length = {{partner_agreementsJSON.length}} rows
+</span>
+<br/>
+<span *ngIf="agreement_pathwaysJSON.length > 0">
+  agreement_pathwaysJSON created - length = {{agreement_pathwaysJSON.length}} rows
+</span><br/>
+<span *ngIf="pathway_mappingsJSON.length > 0">
+  pathway_mappingsJSON created - length = {{pathway_mappingsJSON.length}} rows
+</span><br/>
+<span *ngIf="applied_creditsJSON.length > 0">
+  applied_creditsJSON created - length = {{applied_creditsJSON.length}} rows
+</span>

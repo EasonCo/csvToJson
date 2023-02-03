@@ -1,0 +1,9 @@
+<button (click)="getFile()">{{_buttonText}}</button>
+
+
+<input type='file' style="display:none;" (change)='onInput(input)' id='fileInput' #input>
+{{fileNameDisplay}}
+<br/>
+rowsConverted: {{rowsConverted}}
+<!-- <br/>
+{{tehText}} -->
