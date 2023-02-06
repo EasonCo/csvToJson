@@ -41,6 +41,9 @@ export class FileInputComponent implements OnInit {
     if (this._logic === 'vanilla') {
       this.vanillaLogic();
     }
+    if (this._logic === 'guidelines') {
+      this.guidelinesLogic();
+    }
     // console.log('fieldTemplates', this.fieldTemplates);
     // console.log('textAsJson', this.textAsJson);
   }
@@ -67,6 +70,72 @@ export class FileInputComponent implements OnInit {
       }
     };
   }
+
+  guidelinesLogic() {
+
+    this.reader.onload = () => {
+      let text = this.reader.result as string;
+      this.tehText = text as string;
+
+
+      let buildingAString = false;
+      let itemValue = '';
+      let lineNumber = 0;
+      let itemNumber = 0;
+
+      if (text) {
+        text.split(/[\r\n]+/).forEach((line: string, lineIndex: number) => {
+          line.split(',').forEach((item: string, itemIndex: number) => {
+
+              if (buildingAString) {
+                if (!item.endsWith('"') || item.endsWith('""')) {
+                  itemValue = itemValue + '\n' + item;
+                } else {
+                  buildingAString = false;
+                  itemValue = itemValue + '\n' + item;
+         
+                    this.newFields[this.fieldTemplates[itemNumber]] = itemValue;
+                  
+                  itemNumber += 1;
+                  itemValue = '';
+                }
+              } else {
+
+                  if (
+                    (item.startsWith('"') &&
+                      (!item.endsWith('"') || item.endsWith('""'))) ||
+                    (item.startsWith('"') && item.length === 1)
+                  ) {
+
+                    buildingAString = true;
+                    itemValue = itemValue + item;
+                  } else {
+                    if (lineNumber === 0) {
+                      this.fieldTemplates[itemNumber] = item;
+                    } else {
+                      this.newFields[this.fieldTemplates[itemNumber]] = item;
+                    }
+                    itemNumber += 1;
+                  }
+                
+              }
+            
+          });
+
+          if (!buildingAString) {
+            if (lineNumber > 0) {
+              this.textAsJson.push(this.newFields);
+            }
+            this.newFields = {};
+            lineNumber += 1;
+            itemNumber = 0;
+            this.rowsConverted = lineNumber;
+          }
+        });
+      }
+    };
+  }
+
   agreementsLogic() {
     this.reader.onload = () => {
       let text = this.reader.result as string;

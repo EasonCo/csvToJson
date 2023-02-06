@@ -34,17 +34,27 @@ Then use the below tools to convert to JSON and download the converted files
 <br />
 <br />
 
-<app-fileInput
+<!-- <app-fileInput
   [buttonText]="'Choose Pathways File'"
   [logic]="'vanilla'"
   #pathwaysInput
   (click)="displaySaveFile(false)"
 ></app-fileInput>
 <br />
+<br /> -->
+
+<app-fileInput
+  [buttonText]="'Choose Transfer Guidelines File'"
+  [logic]="'guidelines'"
+  #transferGuidelinesInput
+  (click)="displaySaveFile(false)"
+></app-fileInput>
 <br />
+<br />
+<!-- <span *ngIf="transferGuidelinesInput.textAsJson.length == 0">Please Choose Pathways and Transfer Guidelines to continue with Course Enrichment data conversion</span> -->
 <app-convertPathwaysToSchema
-  *ngIf="pathwaysInput.textAsJson.length > 0"
-  [fileToConvert]="pathwaysInput.textAsJson"
+  *ngIf="transferGuidelinesInput.textAsJson.length > 0"
+  [filesToConvert]="{guidelines: transferGuidelinesInput.textAsJson}"
   #pathwaysConverter
   (click)="displaySaveFile(false)"
 ></app-convertPathwaysToSchema>
@@ -128,12 +138,12 @@ Then use the below tools to convert to JSON and download the converted files
     },
 
     {
-      file: pathwaysInput?.textAsJson
-        ? pathwaysInput.textAsJson.length > 0
-          ? pathwaysInput?.textAsJson
+      file: transferGuidelinesInput?.textAsJson
+        ? transferGuidelinesInput.textAsJson.length > 0
+          ? transferGuidelinesInput?.textAsJson
           : undefined
         : undefined,
-      name: 'pathwaysInputFileAsJSON'
+      name: 'transferGuidelinesInputFileAsJSON'
     },
 
     {
@@ -196,12 +206,12 @@ Then use the below tools to convert to JSON and download the converted files
     },
 
     {
-      file: pathwaysConverter?.nonTransferrableCoursesJSON
-        ? pathwaysConverter.nonTransferrableCoursesJSON.length > 0
-          ? pathwaysConverter?.nonTransferrableCoursesJSON
+      file: pathwaysConverter?.transferGuidelinesJSON
+        ? pathwaysConverter.transferGuidelinesJSON.length > 0
+          ? pathwaysConverter?.transferGuidelinesJSON
           : undefined
         : undefined,
-      name: 'non_transferrable_courses'
+      name: 'transferGuidelinesJSON'
     },
 
     {

@@ -13,6 +13,8 @@ export class AppComponent {
 
   @ViewChild('pathwaysInput') pathwaysInput: any;
   @ViewChild('pathwaysConverter') pathwaysConverter: any;
+  @ViewChild('transferGuidelinesInput') transferGuidelinesInput: any;
+  
   
   
   @ViewChild('statesInput') statesInput: any;

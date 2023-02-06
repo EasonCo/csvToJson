@@ -65,7 +65,7 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
               this.agreement_pathwaysJSON.push({
                 id: parseInt(row.ID.toString() + pathway.CourseId.toString()),
                 agreementId: row.ID,
-                PAMS_courseCode: pathway.CourseCode,
+                PAMS_bannerCode: pathway.CourseCode,
                 createdDate: row.CreatedDate,
                 createdBy: row.CreatedBy,
                 modifiedDate: row.ModifiedDate,
