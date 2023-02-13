@@ -11,6 +11,8 @@ import { ConvertAgreementsToSchemaComponent } from './components/convertAgreemen
 import { ConvertStatesToSchemaComponent } from './components/convertStatesToSchema/convertStatesToSchema.component';
 import { ConvertInstitutionsToSchemaComponent } from './components/convertInstitutionsToSchema/convertInstitutionsToSchema.component';
 import { ConvertPathwaysToSchemaComponent } from './components/convertPathwaysToSchema/convertPathwaysToSchema.component';
+import { ConvertCollegesToSchemaComponent } from './components/convertCollegesToSchema/convertCollegesToSchema.component';
+import { ConvertProgramsToSchemaComponent } from './components/convertProgramsToSchema/convertProgramsToSchema.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +21,9 @@ import { ConvertPathwaysToSchemaComponent } from './components/convertPathwaysTo
     ConvertAgreementsToSchemaComponent,
     ConvertStatesToSchemaComponent,
     ConvertInstitutionsToSchemaComponent,
-    ConvertPathwaysToSchemaComponent
+    ConvertPathwaysToSchemaComponent,
+    ConvertCollegesToSchemaComponent,
+    ConvertProgramsToSchemaComponent
   ],
   imports: [
     BrowserModule,

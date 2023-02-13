@@ -2,65 +2,21 @@
   href="https://westerngovernorsuniversity.sharepoint.com/sites/PartnersMigration/SharePartnerDataDumps/Forms/AllItems.aspx?OR=Teams%2DHL&CT=1675178904359&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiIyNy8yMzAxMDEwMDkxMSIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D&viewid=b0919664%2D321d%2D4494%2Db6ad%2Db5c9d2c719f8"
   target="_blank"
 >
-  Parther Site Data Dumps</a
+  Partner Site Data Dumps</a
 >
 <br />
 From the Partner Site Data Dumps, Select December 2022 (or another year/month
 specified by the Partner Site team).<br />
 Download Agreements_with_College_Institution..., Pathways..., Institution...,
-and StateOptions... files from the Partner folder,<br />
-and Institution... from the Share folder.<br />
+and StateOptions..., Colleges..., TransferGuidelineList... files from the Partner folder,<br />
+and Institution..., Program... from the Share folder.<br />
 <br />
 Then use the below tools to convert to JSON and download the converted files
 <br />
 <br />
 <br />
 <hr />
-<app-fileInput
-  [buttonText]="'Choose Agreements File'"
-  [logic]="'agreements'"
-  #agreementsInput
-  (click)="displaySaveFile(false)"
-></app-fileInput>
-<br />
-<br />
-<app-convertAgreementsToSchema
-  *ngIf="agreementsInput.textAsJson.length > 0"
-  [fileToConvert]="agreementsInput.textAsJson"
-  #agreementConverter
-  (click)="displaySaveFile(false)"
-></app-convertAgreementsToSchema>
 
-<br />
-<br />
-
-<!-- <app-fileInput
-  [buttonText]="'Choose Pathways File'"
-  [logic]="'vanilla'"
-  #pathwaysInput
-  (click)="displaySaveFile(false)"
-></app-fileInput>
-<br />
-<br /> -->
-
-<app-fileInput
-  [buttonText]="'Choose Transfer Guidelines File'"
-  [logic]="'guidelines'"
-  #transferGuidelinesInput
-  (click)="displaySaveFile(false)"
-></app-fileInput>
-<br />
-<br />
-<!-- <span *ngIf="transferGuidelinesInput.textAsJson.length == 0">Please Choose Pathways and Transfer Guidelines to continue with Course Enrichment data conversion</span> -->
-<app-convertPathwaysToSchema
-  *ngIf="transferGuidelinesInput.textAsJson.length > 0"
-  [filesToConvert]="{guidelines: transferGuidelinesInput.textAsJson}"
-  #pathwaysConverter
-  (click)="displaySaveFile(false)"
-></app-convertPathwaysToSchema>
-
-<br />
-<br />
 
 <app-fileInput
   [buttonText]="'Choose States File'"
@@ -84,7 +40,7 @@ Then use the below tools to convert to JSON and download the converted files
 <app-fileInput
   *ngIf="stateConverter?.statesJSON?.length > 0"
   [buttonText]="'Choose Share Institutions File'"
-  [logic]="'vanilla'"
+  [logic]="'guidelines'"
   #shareInstitutionsInput
   (click)="displaySaveFile(false)"
 ></app-fileInput>
@@ -93,7 +49,7 @@ Then use the below tools to convert to JSON and download the converted files
 <app-fileInput
   *ngIf="shareInstitutionsInput?.textAsJson?.length > 0"
   [buttonText]="'Choose Partner Institutions File'"
-  [logic]="'vanilla'"
+  [logic]="'guidelines'"
   #partnerInstitutionsInput
   (click)="displaySaveFile(false)"
 ></app-fileInput>
@@ -114,6 +70,102 @@ Then use the below tools to convert to JSON and download the converted files
 ></app-convertInstitutionsToSchema>
 <br />
 <br />
+
+<ng-container *ngIf="!(institutionsConverter?.institutionsJSON?.length > 0)"> Please Complete State and Institution conversion to continue</ng-container>
+<ng-container *ngIf="institutionsConverter?.institutionsJSON?.length > 0">
+<app-fileInput
+  [buttonText]="'Choose Colleges File'"
+  [logic]="'vanilla'"
+  #collegesInput
+  (click)="displaySaveFile(false)">
+</app-fileInput>
+<br />
+<br /> 
+<app-convertCollegesToSchema
+  *ngIf="collegesInput.textAsJson.length > 0"
+  [fileToConvert]="collegesInput.textAsJson"
+  #collegesConverter
+  (click)="displaySaveFile(false)">
+</app-convertCollegesToSchema>
+
+<br />
+<br />
+
+<span *ngIf="!(collegesConverter?.collegesJSON?.length > 0)">
+  Please convert Colleges continue to Program Conversion
+</span>
+
+<app-fileInput
+*ngIf="(collegesConverter?.collegesJSON?.length > 0) "
+  [buttonText]="'Choose Programs File'"
+  [logic]="'guidelines'"
+  #programsInput
+  (click)="displaySaveFile(false)">
+</app-fileInput>
+<br />
+<br /> 
+<app-convertProgramsToSchema
+  *ngIf="programsInput?.textAsJson.length > 0"
+  [filesToConvert]="{
+    colleges: collegesConverter.collegesJSON,
+    programs: programsInput.textAsJson,
+    institutions: institutionsConverter.institutionsJSON
+  }"
+  #programsConverter
+  (click)="displaySaveFile(false)">
+</app-convertProgramsToSchema>
+
+<br />
+<br />
+
+<span *ngIf="!(collegesConverter?.collegesJSON?.length > 0) || !(programsConverter?.programsJSON?.length > 0)">
+  Please convert Colleges and Programs to continue to Institution Conversion
+</span>
+<app-fileInput
+*ngIf="(collegesConverter?.collegesJSON?.length > 0) && (programsConverter?.programsJSON?.length > 0)"
+  [buttonText]="'Choose Agreements File'"
+  [logic]="'agreements'"
+  #agreementsInput
+  (click)="displaySaveFile(false)"
+></app-fileInput>
+<br />
+<br />
+<app-convertAgreementsToSchema
+  *ngIf="agreementsInput?.textAsJson.length > 0"
+  [filesToConvert]="{
+    colleges: collegesConverter.collegesJSON,
+    agreements: agreementsInput.textAsJson,
+    programs: programsConverter.programsJSON
+  }"
+  #agreementConverter
+  (click)="displaySaveFile(false)"
+></app-convertAgreementsToSchema>
+
+<br />
+<br />
+
+
+
+<app-fileInput
+  [buttonText]="'Choose Transfer Guidelines File'"
+  [logic]="'guidelines'"
+  #transferGuidelinesInput
+  (click)="displaySaveFile(false)"
+></app-fileInput>
+<br />
+<br />
+<!-- <span *ngIf="transferGuidelinesInput.textAsJson.length == 0">Please Choose Pathways and Transfer Guidelines to continue with Course Enrichment data conversion</span> -->
+<app-convertPathwaysToSchema
+  *ngIf="transferGuidelinesInput.textAsJson.length > 0"
+  [filesToConvert]="{ guidelines: transferGuidelinesInput.textAsJson }"
+  #pathwaysConverter
+  (click)="displaySaveFile(false)"
+></app-convertPathwaysToSchema>
+
+<br />
+<br />
+
+</ng-container>
 <hr />
 <button id="downloadFiles" (click)="displaySaveFile()">Download files</button>
 <br />
@@ -128,6 +180,24 @@ Then use the below tools to convert to JSON and download the converted files
 <app-saveFile
   *ngIf="_displaySaveFile === true"
   [fileContent]="[
+  {
+    file: collegesInput?.textAsJson
+      ? collegesInput.textAsJson.length > 0
+        ? collegesInput?.textAsJson
+        : undefined
+      : undefined,
+    name: 'collegesInputFileAsJSON'
+  },
+
+  {
+    file: programsInput?.textAsJson
+      ? programsInput.textAsJson.length > 0
+        ? programsInput?.textAsJson
+        : undefined
+      : undefined,
+    name: 'programsInputFileAsJSON'
+  },
+
     {
       file: agreementsInput?.textAsJson
         ? agreementsInput.textAsJson.length > 0
@@ -136,6 +206,7 @@ Then use the below tools to convert to JSON and download the converted files
         : undefined,
       name: 'agreementsInputFileAsJSON'
     },
+
 
     {
       file: transferGuidelinesInput?.textAsJson
@@ -206,12 +277,30 @@ Then use the below tools to convert to JSON and download the converted files
     },
 
     {
+      file: collegesConverter?.collegesJSON
+        ? collegesConverter.collegesJSON.length > 0
+          ? collegesConverter?.collegesJSON
+          : undefined
+        : undefined,
+      name: 'colleges'
+    },
+
+    {
+      file: programsConverter?.programsJSON
+        ? programsConverter.programsJSON.length > 0
+          ? programsConverter?.programsJSON
+          : undefined
+        : undefined,
+      name: 'programs'
+    },
+
+    {
       file: pathwaysConverter?.transferGuidelinesJSON
         ? pathwaysConverter.transferGuidelinesJSON.length > 0
           ? pathwaysConverter?.transferGuidelinesJSON
           : undefined
         : undefined,
-      name: 'transferGuidelinesJSON'
+      name: 'transferGuidelines'
     },
 
     {

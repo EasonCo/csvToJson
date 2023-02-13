@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { camelize } from 'src/app/utilities/camelize';
 
 @Component({
   selector: 'app-convertPathwaysToSchema',
@@ -48,11 +49,11 @@ export class ConvertPathwaysToSchemaComponent implements OnInit {
       delete rowPH['Path'];
       delete rowPH['Course Units'];
       delete rowPH['Course Name'];
-      delete rowPH['College(s)'];
-      delete rowPH['Program(s)'];
+      // delete rowPH['College(s)'];
+      // delete rowPH['Program(s)'];
 
       Object.keys(rowPH).forEach((key: any) => {
-        rowPH[this.camelize(key)] = rowPH[key];
+        rowPH[camelize(key)] = rowPH[key];
         delete rowPH[key];
       });
       rowPH['transferArea'] = rowPH['area'];
@@ -60,16 +61,10 @@ export class ConvertPathwaysToSchemaComponent implements OnInit {
       rowPH['PAMS_bannerCode'] = rowPH['course'];
       delete rowPH['course'];
       this.transferGuidelinesJSON.push(rowPH);
+      // if(rowPH['PAMS_bannerCode'].includes('C100')){ console.log('TEST -> ', rowPH)}
     });
-  }
+    console.log('transferGuidelinesJSON', this.transferGuidelinesJSON)
 
-  camelize(str: string) {
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-        return index === 0 ? word.toLowerCase() : word.toUpperCase();
-      })
-      .replace(/\s+/g, '')
-      .replace('-', '');
   }
 
   constructor() {}

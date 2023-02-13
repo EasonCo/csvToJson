@@ -10,10 +10,10 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
 
   ngOnInit() {}
 
-  _fileToConvert: any;
-  @Input() set fileToConvert(val: any) {
-    console.log('agreements data received for conversion', val);
-    this._fileToConvert = val;
+  _filesToConvert: any;
+  @Input() set filesToConvert(val: any) {
+    console.log('Transfer Guidelines data received for conversion', val);
+    this._filesToConvert = val;
   }
 
   partner_agreementsJSON: { [k: string]: any }[] = [];
@@ -25,23 +25,72 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
     this.agreement_pathwaysJSON = [];
     this.pathway_mappingsJSON = [];
     this.applied_creditsJSON = [];
-    this._fileToConvert.forEach((row: any, rowIndex: number) => {
+    this._filesToConvert.agreements.forEach((row: any, rowIndex: number) => {
+      let appliedCreditsId: number;
       if (row.ID.length > 0) {
         row.Applied.forEach((item: any, itemIndex: number) => {
+          let programCode = 'legacy - ' + item.ProgramId.toString();
+          this._filesToConvert.programs.every((programRow: any) => {
+            if (parseInt(programRow.id) === item.ProgramId) {
+              programCode = programRow['PAMS_programCode'];
+              return false;
+            }
+            return true;
+          });
           this.applied_creditsJSON.push({
             id: parseInt(row.ID.toString() + itemIndex.toString()),
             agreementId: row.ID,
-            PAMS_programId: item.ProgramId,
+            PAMS_programCode: programCode,
             appliedCreditsCategory: item.Apply,
-            crediteEarned: item.Earned
-          })
-        })
+            crediteEarned: item.Earned,
+          });
+        });
+        let collegeAbbrev: string = '';
+        this._filesToConvert.colleges.forEach((collegesRow: any) => {
+          let collegesShorts = [
+            'business',
+            'teachers',
+            'health',
+            'information',
+          ];
+          collegesShorts.every((short: string) => {
+            if (
+              row.College.toLowerCase().includes(short) &&
+              collegesRow.name.toLowerCase().includes(short)
+            ) {
+              collegeAbbrev = collegesRow['PAMS_collegeAbbrev'];
+              return false;
+            }
+            return true;
+          });
 
+          // switch(true) {
+          //   case(row.College.toLowerCase().includes('business') && collegesRow.name.toLowerCase().includes('business')): {
+          //     collegeAbbrev = 'BU';
+          //     break;
+          //   }
+          //   case(row.College.toLowerCase().includes('teachers')): {
+          //     collegeAbbrev = 'TC';
+          //     break;
+          //   }
+          //   case(row.College.toLowerCase().includes('health')): {
+          //     collegeAbbrev = 'HE';
+          //     break;
+          //   }
+          //   case(row.College.toLowerCase().includes('information')): {
+          //     collegeAbbrev = 'IT';
+          //     break;
+          //   }
+          //   default: {
+          //     collegeAbbrev = '';
+          //   }
+          // }
+        });
         this.partner_agreementsJSON.push({
           id: row.ID,
           name: row.Name,
           institution: row.Institution,
-          college: row.College,
+          PAMS_collegeAbbreviation: collegeAbbrev,
           published: row.Published,
           status: row.Status,
           rejectionComments: row.RejectionComments,
@@ -50,8 +99,8 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
           institutionNotes: row.InstitutionNotes,
           createdDate: row.CreatedDate,
           createdBy: row.CreatedBy,
-          modifiedDate: row.ModifiedDate,
-          modifiedBy: row.ModifiedBy,
+          modifiedDate: row.Modified,
+          modifiedBy: row['Modified By'],
         });
         if (
           row.Pathways &&
@@ -68,13 +117,22 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
                 PAMS_bannerCode: pathway.CourseCode,
                 createdDate: row.CreatedDate,
                 createdBy: row.CreatedBy,
-                modifiedDate: row.ModifiedDate,
-                modifiedBy: row.ModifiedBy,
+                modifiedDate: row.Modified,
+                modifiedBy: row['Modified By'],
               });
 
               if (pathway.Value) {
                 Object.keys(pathway.Value).forEach(
                   (value: any, valueIndex: number) => {
+                    let programCode = 'legacy - ' + value;
+                    this._filesToConvert.programs.every((programRow: any) => {
+                      if (programRow.id === value) {
+                        programCode = programRow['PAMS_programCode'];
+                        return false;
+                      }
+                      return true;
+                    });
+
                     this.pathway_mappingsJSON.push({
                       id: parseInt(
                         row.ID.toString() +
@@ -84,12 +142,12 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
                       pathwayId: parseInt(
                         row.ID.toString() + pathway.CourseId.toString()
                       ),
-                      PAMS_programId: value,
+                      PAMS_programCode: programCode,
                       partnerCourse: pathway.Value[value],
                       createdDate: row.CreatedDate,
                       createdBy: row.CreatedBy,
-                      modifiedDate: row.ModifiedDate,
-                      modifiedBy: row.ModifiedBy,
+                      modifiedDate: row.Modified,
+                      modifiedBy: row['Modified By'],
                     });
                   }
                 );
@@ -106,5 +164,6 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
     console.log('agreements', this.partner_agreementsJSON);
     console.log('pathways', this.agreement_pathwaysJSON);
     console.log('mappings', this.pathway_mappingsJSON);
+    console.log('credits', this.applied_creditsJSON);
   }
 }

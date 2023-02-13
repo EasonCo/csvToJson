@@ -50,6 +50,8 @@ export class ConvertInstitutionsToSchemaComponent implements OnInit {
         modifiedBy: row['Modified By'],
       });
     });
+    console.log('institutionsJSON', this.institutionsJSON)
+
   }
 
   constructor() {}

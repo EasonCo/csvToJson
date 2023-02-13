@@ -11,6 +11,12 @@ export class AppComponent {
   @ViewChild('agreementsInput') agreementsInput: any;
   @ViewChild('agreementConverter') agreementConverter: any;
 
+  @ViewChild('collegesInput') collegesInput: any;
+  @ViewChild('collegesConverter') collegesConverter: any;
+  
+  @ViewChild('programsInput') programsInput: any;
+  @ViewChild('programsConverter') programsConverter: any;
+
   @ViewChild('pathwaysInput') pathwaysInput: any;
   @ViewChild('pathwaysConverter') pathwaysConverter: any;
   @ViewChild('transferGuidelinesInput') transferGuidelinesInput: any;
