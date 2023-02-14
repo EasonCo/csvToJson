@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { camelize } from 'src/app/utilities/camelize';
 
 @Component({
   selector: 'app-convertStatesToSchema',
   templateUrl: './convertStatesToSchema.component.html',
-  styleUrls: ['./convertStatesToSchema.component.css']
+  styleUrls: ['./convertStatesToSchema.component.css'],
 })
 export class ConvertStatesToSchemaComponent implements OnInit {
   _fileToConvert: any;
@@ -20,14 +21,33 @@ export class ConvertStatesToSchemaComponent implements OnInit {
       delete item.AALogo;
       delete item['Item Type'];
       delete item.Path;
+      try {
+        item.IsDBAState =
+          item.IsDBAState.toLowerCase() === 'true'
+            ? true
+            : item.IsDBAState.toLowerCase() === 'false'
+            ? false
+            : item.IsDBAState;
+      } catch (e) {
+        console.log('for row -> ', item);
+        console.log(e);
+      }
+
+      Object.keys(item).forEach((key: any) => {
+        if (key === 'ID') {
+          item.id = item.ID;
+          delete item.ID;
+        } else {
+          item[camelize(key)] = item[key];
+          delete item[key];
+        }
+      });
     });
     this.statesJSON = [...ph];
-    console.log('statesJSON', this.statesJSON)
+    console.log('statesJSON', this.statesJSON);
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

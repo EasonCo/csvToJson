@@ -42,7 +42,11 @@ export class ConvertProgramsToSchemaComponent implements OnInit {
         });
         rowPH = { ...row };
         Object.keys(rowPH).forEach((key: any) => {
-          if (!key.includes('Apply') && !key.includes('ID') && !key.includes('CAGE')) {
+          if (
+            !key.includes('Apply') &&
+            !key.includes('ID') &&
+            !key.includes('CAGE')
+          ) {
             rowPH[camelize(key)] = rowPH[key];
             delete rowPH[key];
           } else {
@@ -50,6 +54,14 @@ export class ConvertProgramsToSchemaComponent implements OnInit {
               rowPH[key.toLowerCase()] = rowPH[key];
               delete rowPH[key];
             }
+          }
+          if (key === 'Inactive') {
+            rowPH['inactive'] =
+              rowPH['inactive'].toLowerCase() === 'true'
+                ? true
+                : rowPH['inactive'].toLowerCase() === 'false'
+                ? false
+                : rowPH['inactive'];
           }
         });
         rowPH['PAMS_programCode'] = rowPH['abbreviation'];
@@ -59,7 +71,6 @@ export class ConvertProgramsToSchemaComponent implements OnInit {
         delete rowPH['abbreviation'];
         delete rowPH['itemType'];
         delete rowPH['path'];
-
 
         ph.push(rowPH);
       }

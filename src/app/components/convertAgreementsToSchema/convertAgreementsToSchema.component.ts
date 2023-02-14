@@ -43,6 +43,10 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
             PAMS_programCode: programCode,
             appliedCreditsCategory: item.Apply,
             crediteEarned: item.Earned,
+            createdDate: row.Created,
+            createdBy: row['Created By'],
+            modifiedDate: row.Modified,
+            modifiedBy: row['Modified By'],
           });
         });
         let collegeAbbrev: string = '';
@@ -97,8 +101,8 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
           notesForApprover: row.NotesForApprover,
           programNotes: row.ProgramNotes,
           institutionNotes: row.InstitutionNotes,
-          createdDate: row.CreatedDate,
-          createdBy: row.CreatedBy,
+          createdDate: row.Created,
+          createdBy: row['Created By'],
           modifiedDate: row.Modified,
           modifiedBy: row['Modified By'],
         });
@@ -115,8 +119,8 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
                 id: parseInt(row.ID.toString() + pathway.CourseId.toString()),
                 agreementId: row.ID,
                 PAMS_bannerCode: pathway.CourseCode,
-                createdDate: row.CreatedDate,
-                createdBy: row.CreatedBy,
+                createdDate: row.Created,
+                createdBy: row['Created By'],
                 modifiedDate: row.Modified,
                 modifiedBy: row['Modified By'],
               });
@@ -144,8 +148,8 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
                       ),
                       PAMS_programCode: programCode,
                       partnerCourse: pathway.Value[value],
-                      createdDate: row.CreatedDate,
-                      createdBy: row.CreatedBy,
+                      createdDate: row.Created,
+                      createdBy: row['Created By'],
                       modifiedDate: row.Modified,
                       modifiedBy: row['Modified By'],
                     });

@@ -30,28 +30,47 @@ export class ConvertInstitutionsToSchemaComponent implements OnInit {
           }
         }
       });
-      this.institutionsJSON.push({
-        id: row.ID,
-        name: row.Name,
-        acronym: row['Institute Acronym'],
-        isSystem: row.IsSystem,
-        system: row.System,
-        stateId: stateIdPh,
-        hasReverse: row.HasReverse,
-        logo: logoPh,
-        approvers: row.Approvers,
-        group: row.Group,
-        isDistrict: row.IsDistrict,
-        district: row.District,
-        notes: row.Notes,
-        createdDate: row.Created,
-        createdBy: row['Created By'],
-        modifiedDate: row.Modified,
-        modifiedBy: row['Modified By'],
-      });
+      try {
+        this.institutionsJSON.push({
+          id: row.ID,
+          name: row.Name,
+          acronym: row['Institute Acronym'],
+          isSystem:
+            row.IsSystem.toLowerCase() === 'true'
+              ? true
+              : row.IsSystem.toLowerCase() === 'false'
+              ? false
+              : row.IsSystem,
+          system: row.System,
+          stateId: stateIdPh,
+          hasReverse:
+            row.HasReverse.toLowerCase() === 'true'
+              ? true
+              : row.IsSystem.toLowerCase() === 'false'
+              ? false
+              : row.HasReverse,
+          logo: logoPh,
+          approvers: row.Approvers,
+          group: row.Group,
+          isDistrict:
+            row.IsDistrict.toLowerCase() === 'true'
+              ? true
+              : row.IsSystem.toLowerCase() === 'false'
+              ? false
+              : row.IsDistrict,
+          district: row.District,
+          notes: row.Notes,
+          createdDate: row.Created,
+          createdBy: row['Created By'],
+          modifiedDate: row.Modified,
+          modifiedBy: row['Modified By'],
+        });
+      } catch (e) {
+        console.log('for row -> ', row);
+        console.log(e);
+      }
     });
-    console.log('institutionsJSON', this.institutionsJSON)
-
+    console.log('institutionsJSON', this.institutionsJSON);
   }
 
   constructor() {}
