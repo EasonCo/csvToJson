@@ -28,6 +28,17 @@ export class ConvertCollegesToSchemaComponent implements OnInit {
       delete item.Name;
       item.note = item.Note;
       delete item.Note;
+      item['createdBy'] = 'conversionProcess'
+      item['createdDate'] = 'NOW()';
+      delete item['Created'];
+      item['modifiedBy'] = 'conversionProcess';
+      item['modifiedDate'] = 'NOW()';
+      delete item['Modified'];
+      item['recordVersion'] = 1;
+      item['activeVersion'] = 1;
+      item['activeDate'] = 'NOW()';
+
+      
     });
     this.collegesJSON = [...ph];
     console.log('collegesJSON', this.collegesJSON)

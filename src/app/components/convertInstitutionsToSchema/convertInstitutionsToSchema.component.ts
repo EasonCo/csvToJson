@@ -18,8 +18,8 @@ export class ConvertInstitutionsToSchemaComponent implements OnInit {
       let logoPh = '';
       this._filesToConvert.state.forEach((stateItem: any) => {
         if (stateIdPh === 0) {
-          if (stateItem.State === row.State) {
-            stateIdPh = parseInt(stateItem.ID);
+          if (stateItem.state === row.State) {
+            stateIdPh = parseInt(stateItem.id);
           }
         }
       });
@@ -32,38 +32,41 @@ export class ConvertInstitutionsToSchemaComponent implements OnInit {
       });
       try {
         this.institutionsJSON.push({
-          id: row.ID,
+          id: parseInt(row.ID),
           name: row.Name,
           acronym: row['Institute Acronym'],
           isSystem:
             row.IsSystem.toLowerCase() === 'true'
-              ? true
+              ? 1
               : row.IsSystem.toLowerCase() === 'false'
-              ? false
+              ? 0
               : row.IsSystem,
-          system: row.System,
+          institutionSystem: row.System,
           stateId: stateIdPh,
           hasReverse:
             row.HasReverse.toLowerCase() === 'true'
-              ? true
+              ? 1
               : row.IsSystem.toLowerCase() === 'false'
-              ? false
+              ? 0
               : row.HasReverse,
           logo: logoPh,
           approvers: row.Approvers,
-          group: row.Group,
+          institutionGroup: row.Group,
           isDistrict:
             row.IsDistrict.toLowerCase() === 'true'
-              ? true
+              ? 1
               : row.IsSystem.toLowerCase() === 'false'
-              ? false
+              ? 0
               : row.IsDistrict,
           district: row.District,
           notes: row.Notes,
-          createdDate: row.Created,
+          createdDate: 'STR_TO_DATE("' + row.Created + '", "%m/%d/%Y %H:%i")',
           createdBy: row['Created By'],
-          modifiedDate: row.Modified,
+          modifiedDate: 'STR_TO_DATE("' + row.Modified + '", "%m/%d/%Y %H:%i")',
           modifiedBy: row['Modified By'],
+          recordVersion: 1,
+          activeVersion: 1,
+          activeDate: 'NOW()',
         });
       } catch (e) {
         console.log('for row -> ', row);

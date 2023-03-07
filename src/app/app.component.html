@@ -11,7 +11,28 @@ Download Agreements_with_College_Institution..., Pathways..., Institution...,
 and StateOptions..., Colleges..., TransferGuidelineList... files from the Partner folder,<br />
 and Institution..., Program... from the Share folder.<br />
 <br />
-Then use the below tools to convert to JSON and download the converted files
+Then use the below tools to convert to SQL insert statements and download the converted files.
+<br/>
+<br/>
+The recommended insert order is:
+<br/>
+states
+<br/>
+colleges
+<br/>
+programs
+<br/>
+transfer_guidelines
+<br/>
+partner_institutions
+<br/>
+partner_agreements
+<br/>
+agreement_applied_credits
+<br/>
+agreement_pathways
+<br/>
+pathway_mappings
 <br />
 <br />
 <br />
@@ -135,7 +156,8 @@ Then use the below tools to convert to JSON and download the converted files
   [filesToConvert]="{
     colleges: collegesConverter.collegesJSON,
     agreements: agreementsInput.textAsJson,
-    programs: programsConverter.programsJSON
+    programs: programsConverter.programsJSON,
+    institutions: institutionsConverter.institutionsJSON
   }"
   #agreementConverter
   (click)="displaySaveFile(false)"
@@ -166,20 +188,123 @@ Then use the below tools to convert to JSON and download the converted files
 <br />
 
 </ng-container>
+<br />
+<br />
 <hr />
-<button id="downloadFiles" (click)="displaySaveFile()">Download files</button>
+Due to large size of some files, downloads are broken into multiple chunks.
+<hr/>
+<button id="downloadFiles1" (click)="displaySaveFile1()">Download converted files - other</button>
 <br />
 <br />
 <br />
 <br />
-<div *ngIf="_displaySaveFile === true">
+<div *ngIf="_displaySaveFile1 === true">
   Custom file names must be three or more characters long,<br />
   otherwise, a default filename will be supplied.<br /><br />
   All file names will have a timestamp appended to ensure uniqueness.<br /><br />
 </div>
 <app-saveFile
-  *ngIf="_displaySaveFile === true"
+  *ngIf="_displaySaveFile1 === true"
   [fileContent]="[
+    {
+      file: agreementConverter?.partner_agreementsJSON
+        ? agreementConverter.partner_agreementsJSON.length > 0
+          ? agreementConverter?.partner_agreementsJSON
+          : undefined
+        : undefined,
+      name: 'partner_agreements'
+    },
+    {
+      file: agreementConverter?.agreement_pathwaysJSON
+        ? agreementConverter.agreement_pathwaysJSON.length > 0
+          ? agreementConverter?.agreement_pathwaysJSON
+          : undefined
+        : undefined,
+      name: 'agreement_pathways'
+    },
+
+    {
+      file: agreementConverter?.applied_creditsJSON
+        ? agreementConverter.applied_creditsJSON.length > 0
+          ? agreementConverter?.applied_creditsJSON
+          : undefined
+        : undefined,
+      name: 'agreement_applied_credits'
+    },
+
+    {
+      file: collegesConverter?.collegesJSON
+        ? collegesConverter.collegesJSON.length > 0
+          ? collegesConverter?.collegesJSON
+          : undefined
+        : undefined,
+      name: 'colleges'
+    },
+
+    {
+      file: programsConverter?.programsJSON
+        ? programsConverter.programsJSON.length > 0
+          ? programsConverter?.programsJSON
+          : undefined
+        : undefined,
+      name: 'programs'
+    },
+
+    {
+      file: pathwaysConverter?.transferGuidelinesJSON
+        ? pathwaysConverter.transferGuidelinesJSON.length > 0
+          ? pathwaysConverter?.transferGuidelinesJSON
+          : undefined
+        : undefined,
+      name: 'transfer_guidelines'
+    },
+
+    {
+      file: stateConverter?.statesJSON
+        ? stateConverter.statesJSON.length > 0
+          ? stateConverter?.statesJSON
+          : undefined
+        : undefined,
+      name: 'states'
+    },
+
+    {
+      file: institutionsConverter?.institutionsJSON
+        ? institutionsConverter.institutionsJSON.length > 0
+          ? institutionsConverter?.institutionsJSON
+          : undefined
+        : undefined,
+      name: 'partner_institutions'
+    }
+  ]"
+></app-saveFile>
+
+<button id="downloadFiles2" (click)="displaySaveFile2()">Download converted files - pathway_mappings</button>
+<br />
+<br />
+<br />
+<br />
+<app-saveFile
+  *ngIf="_displaySaveFile2 === true"
+  [fileContent]="[
+{
+  file: agreementConverter?.pathway_mappingsJSON
+    ? agreementConverter.pathway_mappingsJSON.length > 0
+      ? agreementConverter?.pathway_mappingsJSON
+      : undefined
+    : undefined,
+  name: 'pathway_mappings'
+}  ]"
+></app-saveFile>
+<!-- 
+<button id="downloadFiles3" (click)="displaySaveFile3()">Download source files as JSON</button>
+<br />
+<br />
+<br />
+<br />
+<app-saveFile
+  *ngIf="_displaySaveFile3 === true"
+[fileContent]="[
   {
     file: collegesInput?.textAsJson
       ? collegesInput.textAsJson.length > 0
@@ -241,86 +366,9 @@ Then use the below tools to convert to JSON and download the converted files
           : undefined
         : undefined,
       name: 'partnerInstitutionsInputFileAsJSON'
-    },
+    }  ]"
+    ></app-saveFile>
 
-    {
-      file: agreementConverter?.partner_agreementsJSON
-        ? agreementConverter.partner_agreementsJSON.length > 0
-          ? agreementConverter?.partner_agreementsJSON
-          : undefined
-        : undefined,
-      name: 'partner_agreements'
-    },
-    {
-      file: agreementConverter?.agreement_pathwaysJSON
-        ? agreementConverter.agreement_pathwaysJSON.length > 0
-          ? agreementConverter?.agreement_pathwaysJSON
-          : undefined
-        : undefined,
-      name: 'agreement_pathways'
-    },
-    {
-      file: agreementConverter?.pathway_mappingsJSON
-        ? agreementConverter.pathway_mappingsJSON.length > 0
-          ? agreementConverter?.pathway_mappingsJSON
-          : undefined
-        : undefined,
-      name: 'pathway_mappings'
-    },
-    {
-      file: agreementConverter?.applied_creditsJSON
-        ? agreementConverter.applied_creditsJSON.length > 0
-          ? agreementConverter?.applied_creditsJSON
-          : undefined
-        : undefined,
-      name: 'applied_credits'
-    },
 
-    {
-      file: collegesConverter?.collegesJSON
-        ? collegesConverter.collegesJSON.length > 0
-          ? collegesConverter?.collegesJSON
-          : undefined
-        : undefined,
-      name: 'colleges'
-    },
-
-    {
-      file: programsConverter?.programsJSON
-        ? programsConverter.programsJSON.length > 0
-          ? programsConverter?.programsJSON
-          : undefined
-        : undefined,
-      name: 'programs'
-    },
-
-    {
-      file: pathwaysConverter?.transferGuidelinesJSON
-        ? pathwaysConverter.transferGuidelinesJSON.length > 0
-          ? pathwaysConverter?.transferGuidelinesJSON
-          : undefined
-        : undefined,
-      name: 'transferGuidelines'
-    },
-
-    {
-      file: stateConverter?.statesJSON
-        ? stateConverter.statesJSON.length > 0
-          ? stateConverter?.statesJSON
-          : undefined
-        : undefined,
-      name: 'states'
-    },
-
-    {
-      file: institutionsConverter?.institutionsJSON
-        ? institutionsConverter.institutionsJSON.length > 0
-          ? institutionsConverter?.institutionsJSON
-          : undefined
-        : undefined,
-      name: 'partner_institutions'
-    }
-  ]"
-></app-saveFile>
-<br />
+<br /> -->
 <!-- <button (click)="logStuff()">logStuff</button> -->

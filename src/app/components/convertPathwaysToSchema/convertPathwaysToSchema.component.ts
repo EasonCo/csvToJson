@@ -43,7 +43,7 @@ export class ConvertPathwaysToSchemaComponent implements OnInit {
 
     this._filesToConvert.guidelines.forEach((row: any, rowIndex: number) => {
       rowPH = { ...row };
-      rowPH['id'] = rowIndex;
+      rowPH['ID'] = rowIndex;
       delete rowPH['Title'];
       delete rowPH['Item Type'];
       delete rowPH['Path'];
@@ -60,6 +60,29 @@ export class ConvertPathwaysToSchemaComponent implements OnInit {
       delete rowPH['area'];
       rowPH['PAMS_bannerCode'] = rowPH['course'];
       delete rowPH['course'];
+
+      rowPH['guidelinesGroup'] = rowPH['group'];
+      delete rowPH['group'];
+      rowPH['guidelinesSubGroup'] = rowPH['subGroup'];
+      delete rowPH['subGroup'];
+
+      rowPH['createdBy'] = 'conversionProcess';
+      rowPH['createdDate'] = 'STR_TO_DATE("' + rowPH['created'] + '", "%m/%d/%Y %H:%i")';
+      delete rowPH['created'];
+      rowPH['modifiedBy'] = 'conversionProcess';
+      rowPH['modifiedDate'] = 'STR_TO_DATE("' + rowPH['modified'] + '", "%m/%d/%Y %H:%i")';
+      delete rowPH['modified'];
+      rowPH['recordVersion'] = 1;
+      rowPH['activeVersion'] = 1;
+      rowPH['activeDate'] = 'NOW()';
+      rowPH['transferRequirements'] = rowPH['transferRequirement(S)'];
+      delete rowPH['transferRequirement(S)'];
+      rowPH['programs'] = rowPH['program(S)'];
+      delete rowPH['program(S)'];
+      rowPH['colleges'] = rowPH['college(S)'];
+      delete rowPH['college(S)'];
+
+
       this.transferGuidelinesJSON.push(rowPH);
       // if(rowPH['PAMS_bannerCode'].includes('C100')){ console.log('TEST -> ', rowPH)}
     });

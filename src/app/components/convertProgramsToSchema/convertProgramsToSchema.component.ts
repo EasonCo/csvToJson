@@ -56,21 +56,35 @@ export class ConvertProgramsToSchemaComponent implements OnInit {
             }
           }
           if (key === 'Inactive') {
-            rowPH['inactive'] =
+            rowPH['inactiveProgram'] =
               rowPH['inactive'].toLowerCase() === 'true'
-                ? true
+                ? 1
                 : rowPH['inactive'].toLowerCase() === 'false'
-                ? false
+                ? 0
                 : rowPH['inactive'];
           }
         });
+        delete rowPH['inactive'];
+        rowPH['id'] = parseInt(rowPH['id']);
         rowPH['PAMS_programCode'] = rowPH['abbreviation'];
-        rowPH['PAMS_collegeAbbreviation'] = collegeAbbrev;
+        rowPH['PAMS_collegeAbbrev'] = collegeAbbrev;
         delete rowPH['sequence'];
         delete rowPH['college'];
         delete rowPH['abbreviation'];
         delete rowPH['itemType'];
         delete rowPH['path'];
+        rowPH['programName'] = rowPH['name'];
+        delete rowPH['name']
+
+        rowPH['createdBy'] = 'conversionProcess';
+        rowPH['createdDate'] = 'NOW()';
+        delete rowPH['created'];
+        rowPH['modifiedBy'] = 'conversionProcess';
+        rowPH['modifiedDate'] = 'NOW()';
+        delete rowPH['modified'];
+        rowPH['recordVersion'] = 1;
+        rowPH['activeVersion'] = 1;
+        rowPH['activeDate'] = 'NOW()';
 
         ph.push(rowPH);
       }

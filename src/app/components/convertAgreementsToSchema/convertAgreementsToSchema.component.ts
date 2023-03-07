@@ -12,7 +12,7 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
 
   _filesToConvert: any;
   @Input() set filesToConvert(val: any) {
-    console.log('Transfer Guidelines data received for conversion', val);
+    console.log('Agreements data received for conversion', val);
     this._filesToConvert = val;
   }
 
@@ -39,14 +39,23 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
           });
           this.applied_creditsJSON.push({
             id: parseInt(row.ID.toString() + itemIndex.toString()),
-            agreementId: row.ID,
+            agreementId: parseInt(row.ID),
             PAMS_programCode: programCode,
-            appliedCreditsCategory: item.Apply,
-            crediteEarned: item.Earned,
-            createdDate: row.Created,
+            appliedCreditsCategory: item.Apply ? item.Apply : '',
+            creditsEarned: item.Earned ? item.Earned : 0,
+            createdDate:
+              'STR_TO_DATE("' +
+              row.Created.replaceAll('Z', '').replaceAll('T', ' ') +
+              '", "%Y-%m-%d %H:%i:%s")',
             createdBy: row['Created By'],
-            modifiedDate: row.Modified,
+            modifiedDate:
+              'STR_TO_DATE("' +
+              row.Modified.replaceAll('Z', '').replaceAll('T', ' ') +
+              '", "%Y-%m-%d %H:%i:%s")',
             modifiedBy: row['Modified By'],
+            recordVersion: 1,
+            activeVersion: 1,
+            activeDate: 'NOW()',
           });
         });
         let collegeAbbrev: string = '';
@@ -90,21 +99,70 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
           //   }
           // }
         });
+        let tehId = '';
+        if (row.Institution) {
+          this._filesToConvert.institutions.every((item: any) => {
+            if (item.name === row.Institution) {
+              tehId = item.id;
+              return false;
+            } else {
+              return true;
+            }
+          });
+        } else {
+          tehId = '';
+        }
+        if(row.RejectionComments.includes("changes didn't stick: I replaced it with")) {
+          console.log({
+            id: parseInt(row.ID),
+            name: row.Name,
+            institutionId: tehId,
+            PAMS_collegeAbbrev: collegeAbbrev,
+            published: row.Published.toLowerCase() === 'true' ? 1 : 0,
+            status: row.Status,
+            rejectionComments: row.RejectionComments ? row.RejectionComments.replaceAll('"', '\\"') : '',
+            notesForApprover: row.NotesForApprover ? row.NotesForApprover.replaceAll('"', '\\"') : '',
+            programNotes: typeof row.ProgramNotes === 'object' ? JSON.stringify(row.ProgramNotes).replaceAll('"', '\\"') : '',
+            institutionNotes: row.InstitutionNotes ? row.InstitutionNotes.replaceAll('"', '\\"') : '',
+            createdDate:
+              'STR_TO_DATE("' +
+              row.Created.replaceAll('Z', '').replaceAll('T', ' ') +
+              '", "%Y-%m-%d %H:%i:%s")',
+            createdBy: row['Created By'],
+            modifiedDate:
+              'STR_TO_DATE("' +
+              row.Modified.replaceAll('Z', '').replaceAll('T', ' ') +
+              '", "%Y-%m-%d %H:%i:%s")',
+            modifiedBy: row['Modified By'],
+            recordVersion: 1,
+            activeVersion: 1,
+            activeDate: 'NOW()',
+          });
+        }
         this.partner_agreementsJSON.push({
-          id: row.ID,
+          id: parseInt(row.ID),
           name: row.Name,
-          institution: row.Institution,
-          PAMS_collegeAbbreviation: collegeAbbrev,
-          published: row.Published,
+          institutionId: tehId,
+          PAMS_collegeAbbrev: collegeAbbrev,
+          published: row.Published.toLowerCase() === 'true' ? 1 : 0,
           status: row.Status,
-          rejectionComments: row.RejectionComments,
-          notesForApprover: row.NotesForApprover,
-          programNotes: row.ProgramNotes,
-          institutionNotes: row.InstitutionNotes,
-          createdDate: row.Created,
+          rejectionComments: row.RejectionComments ? row.RejectionComments.replaceAll('"', '\\"') : '',
+          notesForApprover: row.NotesForApprover ? row.NotesForApprover.replaceAll('"', '\\"') : '',
+          programNotes: typeof row.ProgramNotes === 'object' ? JSON.stringify(row.ProgramNotes).replaceAll('"', '\\"') : '',
+          institutionNotes: row.InstitutionNotes ? row.InstitutionNotes.replaceAll('"', '\\"') : '',
+          createdDate:
+            'STR_TO_DATE("' +
+            row.Created.replaceAll('Z', '').replaceAll('T', ' ') +
+            '", "%Y-%m-%d %H:%i:%s")',
           createdBy: row['Created By'],
-          modifiedDate: row.Modified,
+          modifiedDate:
+            'STR_TO_DATE("' +
+            row.Modified.replaceAll('Z', '').replaceAll('T', ' ') +
+            '", "%Y-%m-%d %H:%i:%s")',
           modifiedBy: row['Modified By'],
+          recordVersion: 1,
+          activeVersion: 1,
+          activeDate: 'NOW()',
         });
         if (
           row.Pathways &&
@@ -117,12 +175,21 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
             row.Pathways.forEach((pathway: any, pathwayIndex: number) => {
               this.agreement_pathwaysJSON.push({
                 id: parseInt(row.ID.toString() + pathway.CourseId.toString()),
-                agreementId: row.ID,
+                agreementId: parseInt(row.ID),
                 PAMS_bannerCode: pathway.CourseCode,
-                createdDate: row.Created,
+                createdDate:
+                  'STR_TO_DATE("' +
+                  row.Created.replaceAll('Z', '').replaceAll('T', ' ') +
+                  '", "%Y-%m-%d %H:%i:%s")',
                 createdBy: row['Created By'],
-                modifiedDate: row.Modified,
+                modifiedDate:
+                  'STR_TO_DATE("' +
+                  row.Modified.replaceAll('Z', '').replaceAll('T', ' ') +
+                  '", "%Y-%m-%d %H:%i:%s")',
                 modifiedBy: row['Modified By'],
+                recordVersion: 1,
+                activeVersion: 1,
+                activeDate: 'NOW()',
               });
 
               if (pathway.Value) {
@@ -130,7 +197,7 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
                   (value: any, valueIndex: number) => {
                     let programCode = 'legacy - ' + value;
                     this._filesToConvert.programs.every((programRow: any) => {
-                      if (programRow.id === value) {
+                      if (programRow.id === parseInt(value)) {
                         programCode = programRow['PAMS_programCode'];
                         return false;
                       }
@@ -148,10 +215,19 @@ export class ConvertAgreementsToSchemaComponent implements OnInit {
                       ),
                       PAMS_programCode: programCode,
                       partnerCourse: pathway.Value[value],
-                      createdDate: row.Created,
+                      createdDate:
+                        'STR_TO_DATE("' +
+                        row.Created.replaceAll('Z', '').replaceAll('T', ' ') +
+                        '", "%Y-%m-%d %H:%i:%s")',
                       createdBy: row['Created By'],
-                      modifiedDate: row.Modified,
+                      modifiedDate:
+                        'STR_TO_DATE("' +
+                        row.Modified.replaceAll('Z', '').replaceAll('T', ' ') +
+                        '", "%Y-%m-%d %H:%i:%s")',
                       modifiedBy: row['Modified By'],
+                      recordVersion: 1,
+                      activeVersion: 1,
+                      activeDate: 'NOW()',
                     });
                   }
                 );
