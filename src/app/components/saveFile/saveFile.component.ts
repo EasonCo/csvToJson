@@ -26,8 +26,6 @@ export class SaveFileComponent implements OnInit {
       }
       if (item.file) {
         try {
-          let fields: any[] = [];
-          let values: any[] = [];
           let filesList: any[] = [];
           const chunkSize = 100000;
           for (let i = 0; i < item.file.length; i += chunkSize) {
@@ -53,10 +51,13 @@ export class SaveFileComponent implements OnInit {
                 '->',
                 subFile
               );
-              let fileAsString = this.mapTehVals([subFile], item)
+              let valueMap = this.mapTehVals([subFile], item);
+              //let fileAsString = this.mapTehVals([subFile], item);
+              let fileAsString = valueMap[0];
+              let updateString = valueMap[1];
               target.push({
                 // file: JSON.stringify(item.file),
-                file: fileAsString.endsWith(';') ? fileAsString : fileAsString + ';',
+                file: fileAsString.endsWith(';') ? fileAsString : fileAsString + ' AS new ON DUPLICATE KEY UPDATE' + updateString + ';',
                 name: item.name + '_' + index.toString(),
               });
               console.log(
@@ -69,9 +70,12 @@ export class SaveFileComponent implements OnInit {
               );
             });
           } else {
-            let fileAsString = this.mapTehVals(filesList, item).replace(/,\s*$/, "");
+            let valueMap = this.mapTehVals(filesList, item);
+            // let fileAsString = this.mapTehVals(filesList, item).replace(/,\s*$/, "");
+            let fileAsString = valueMap[0].replace(/,\s*$/, "");
+            let updateString = valueMap[1];
             target.push({
-              file: fileAsString.endsWith(';') ? fileAsString : fileAsString + ';',
+              file: fileAsString.endsWith(';') ? fileAsString : fileAsString + ' AS new ON DUPLICATE KEY UPDATE' + updateString + ';',
               name: item.name,
             });
           }
@@ -90,7 +94,9 @@ export class SaveFileComponent implements OnInit {
   mapTehVals(filesList: any, item: any) {
     let fields: any[] = [];
     let values: any[] = [];
-    return filesList[0]
+    let updatesArr: any[] = [];
+    let updateStatement = '';
+    return [filesList[0]
       .map((el: any, elIndex: number) => {
         fields = [];
         values = [];
@@ -125,10 +131,16 @@ export class SaveFileComponent implements OnInit {
         // if(elIndex % 500 === 0) {}
 
         let modCheck = elIndex % 500
+        updatesArr = [];
+        updateStatement = '';
+        fields.forEach((field: string) => {
+          updatesArr.push(' ' + field + ' = new.' + field);
+        })
+        updateStatement = updatesArr.join(' ,')
         switch(modCheck) {
           case 0: {
             return (
-              'INSERT IGNORE INTO partners.' +
+              'INSERT INTO partners.' +
               item.name +
               '(' +
               fields.join(',') +
@@ -142,7 +154,8 @@ export class SaveFileComponent implements OnInit {
             return (
               '(' +
               values.join(',').replaceAll('\n', ' ') +
-              ');'
+              // ');'
+              ') AS new ON DUPLICATE KEY UPDATE' + updateStatement + ';'
             );
             break;
           }
@@ -168,7 +181,7 @@ export class SaveFileComponent implements OnInit {
         // );
 
       })
-      .join('\n');
+      .join('\n'), updateStatement];
   }
 
   selectAll(e: any) {
