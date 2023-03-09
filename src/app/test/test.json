@@ -1,0 +1,47 @@
+{
+  "transcripts": [
+    {
+      "degree": "Bachelor\u0027s",
+      "recordTypeid": "0123x000001FytqAAC",
+      "recordType": "Higher Ed",
+      "transcriptId": "a0r3x00000GePxZAAV",
+      "zip": "52406-2068",
+      "state": "IA",
+      "city": "Cedar Rapids",
+      "institutionName": "Kirkwood Community College",
+      "transcriptInstitution": "001a000001ABa6WAAT"
+    }
+  ],
+  "success": true,
+  "status": "success",
+  "reason": "",
+  "legacy": true,
+  "id": "0033x00003BbUzlAAF",
+  "fields": {
+    "militaryStanding": "Not Applicable",
+    "parentsAttendCollege": "Unknown",
+    "campus": "WGU",
+    "discountAmount": "0.00",
+    "onlineLearningExp": "true",
+    "previousExp": "false",
+    "previousCollegeExp": "true",
+    "whenStart": "1-3 Months",
+    "englishNativeLanguage": "true",
+    "priorCollege": "false",
+    "earnedBachelors": "false",
+    "username": "dkohl97",
+    "majorInterest": "a0k3x00000WZiCXAA1",
+    "collegeInterest": "Information Technology",
+    "graduateHighSchool": "false",
+    "learnMoreFinancialAid": "false",
+    "acceptsTexting": "true",
+    "phone": "(321) 321-3213",
+    "zip": "31901",
+    "email": "dkohlin0308202302@gmail.com",
+    "opportunityId": "0063x00001bsTOfAAM",
+    "ecpidm": "1249530",
+    "lastName": "Kohlin0308202302",
+    "firstName": "Dalinar"
+  },
+  "employments": []
+}
